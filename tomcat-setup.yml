@@ -1,3 +1,4 @@
+---
 - name: Creating tomcat app01
   amazon.aws.ec2:
     key_name: awsnew
