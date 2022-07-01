@@ -7,7 +7,7 @@
     - name: Creating tomcat app01
       ec2:
         key_name: awsnew
-        region: ap-south-1b
+        region: ap-south-1
         instance_type: t2.micro
         image: ami-068257025f72f470d
         wait: yes
@@ -21,8 +21,8 @@
           Name: "app01"
           Project: Vprofile
           Owner: DevOps Team
-        group_id: sg-04b413d03155efad1
-        vpc_subnet_id: subnet-0b94bf89707cb6d5d
+        group_id: "sg-04b413d03155efad1"
+        vpc_subnet_id: "subnet-0b94bf89707cb6d5d"
       register: app01_out
 - name: Common tool setup on all the servers
   hosts: localhost
