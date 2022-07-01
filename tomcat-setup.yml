@@ -25,7 +25,7 @@
         vpc_subnet_id: 
       register: app01_out
 - name: Common tool setup on all the servers
-  hosts: localhost
+  hosts: app01
   become: yes
   vars:
     tom_url: https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.37/bin/apache-tomcat-8.5.37.tar.gz
