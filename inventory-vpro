@@ -1,4 +1,4 @@
-app01 
+app01=172.31.7.43
 
 [appsrvgrp]
 app01
