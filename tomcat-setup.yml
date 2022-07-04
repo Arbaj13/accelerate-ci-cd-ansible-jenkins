@@ -1,5 +1,5 @@
 - name: Common tool setup on all the servers
-  hosts: all
+  hosts: localhost
   become: yes
   become_method: sudo
   remote_user: ubuntu
