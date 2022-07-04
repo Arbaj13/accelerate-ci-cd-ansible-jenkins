@@ -1,31 +1,5 @@
----
-- name: Setup Vprofile Stack
-  hosts: localhost
-  connection: local
-  gather_facts: no
-  tasks:
-    - name: Creating tomcat app01
-      ec2:
-        key_name: awsnew
-        region: ap-south-1
-        instance_type: t2.micro
-        image: ami-068257025f72f470d
-        wait: yes
-        wait_timeout: 300
-        instance_tags:
-          Name: "app01"
-          Project: Vprofile
-          Owner: DevOps Team
-        exact_count: 1
-        count_tag:
-          Name: "app01"
-          Project: Vprofile
-          Owner: DevOps Team
-        group_id: 
-        vpc_subnet_id: 
-      register: app01_out
 - name: Common tool setup on all the servers
-  hosts: localhost
+  hosts: appsrvgrp
   become: yes
   vars:
     tom_url: https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.37/bin/apache-tomcat-8.5.37.tar.gz
@@ -88,12 +62,43 @@
         owner: tomcat
         group: tomcat
         recurse: yes
+
+    - name: Setup tomcat SVC file on Centos 7
+      template:
+         src: templates/epel7-svcfile.j2
+         dest: /etc/systemd/system/tomcat.service
+         mode: "a+x"
+      when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7'      
+
+    - name: Setup tomcat SVC file on Centos 6
+      template:
+         src: templates/epel6-svcfile.j2
+         dest: /etc/init.d/tomcat
+         mode: "a+x"
+      when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '6'
+
+    - name: Setup tomcat SVC file on ubuntu 14/15
+      template:
+         src: templates/ubuntu14_15-svcfile.j2
+         dest: /etc/init.d/tomcat
+         mode: "a+x"
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_major_version < '16'
+
     - name: Setup tomcat SVC file on ubuntu 16 and 18
       template:
          src: templates/ubuntu16-svcfile.j2
          dest: /etc/systemd/system/tomcat.service
          mode: "a+x"
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_major_version >= '16'
+
+    - name: Reload tomcat svc config in ubuntu 14/15
+      command: update-rc.d tomcat defaults
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_major_version < '16'
+
+    - name: Reload tomcat svc config in Centos 6
+      command: chkconfig --add tomcat
+      when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '6'
+
     - name: just force systemd to reread configs (2.4 and above)
       systemd:
         daemon_reload: yes 
@@ -104,3 +109,5 @@
         name: tomcat
         state: started
         enabled: yes
+
+   
