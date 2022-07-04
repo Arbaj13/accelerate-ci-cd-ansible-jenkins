@@ -1,2 +1,2 @@
-[appsrvgrp]
-Tomcat ansible_host=172.31.2.37 ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/accelerate-ci-cd-ansible-jenkins/awsnew.pem
+[myservers]
+172.31.2.37 ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/accelerate-ci-cd-ansible-jenkins/awsnew.pem
